@@ -1,0 +1,4 @@
+# .gitignore template for skeleton-based apps
+/output
+/qx_packages
+.package-cache.json
