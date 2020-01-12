@@ -4,7 +4,7 @@
  * Authors   : Derrell Lipman (derrell)
  */
 
-qx.Class.define("mqtt.pdu.Uint16",
+qx.Class.define("mqtt.pdu.primitive.Uint16",
 {
   type : "static",
 

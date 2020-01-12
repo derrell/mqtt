@@ -36,7 +36,7 @@ qx.Class.define("mqtt.Application",
       }
 
       // Test fixed-size integer functions
-      if (false)
+      if (true)
       {
         let             pdu;
         let             data;
@@ -45,16 +45,16 @@ qx.Class.define("mqtt.Application",
 
         pdu = new mqtt.Buffer(16);
         
-        len += mqtt.pdu.Uint16.format(0x0102, pdu);
-        len += mqtt.pdu.Uint32.format(0x03040506, pdu);
+        len += mqtt.pdu.primitive.Uint16.format(0x0102, pdu);
+        len += mqtt.pdu.primitive.Uint32.format(0x03040506, pdu);
 
         data = pdu.finalize(true);
         this.debug(`len=${len}, pdu=${data.toString()}`);
 
-        int = mqtt.pdu.Uint32.parse(data);
+        int = mqtt.pdu.primitive.Uint32.parse(data);
         this.debug(`parse Uint32=${int}`);
 
-        int = mqtt.pdu.Uint16.parse(data);
+        int = mqtt.pdu.primitive.Uint16.parse(data);
         this.debug(`parse Uint16=${int}`);
 
       }
@@ -70,24 +70,24 @@ qx.Class.define("mqtt.Application",
 
         pdu = new mqtt.Buffer(16);
         
-        len += mqtt.pdu.UintVar.format(127, pdu);
-        len += mqtt.pdu.UintVar.format(16383, pdu);
-        len += mqtt.pdu.UintVar.format(2097151, pdu);
-        len += mqtt.pdu.UintVar.format(2097152, pdu);
+        len += mqtt.pdu.primitive.UintVar.format(127, pdu);
+        len += mqtt.pdu.primitive.UintVar.format(16383, pdu);
+        len += mqtt.pdu.primitive.UintVar.format(2097151, pdu);
+        len += mqtt.pdu.primitive.UintVar.format(2097152, pdu);
 
         data = pdu.finalize(true);
         this.debug(`len=${len}, pdu=${data.toString()}`);
 
         for (i = 0; i < 4; i++)
         {
-          int = mqtt.pdu.UintVar.parse(data);
+          int = mqtt.pdu.primitive.UintVar.parse(data);
           this.debug(`parse UintVar=${int}`);
         }
         this.debug("expected 2097152, 2097151, 16383, 127");
       }
 
       // Test UTF-8 String functions
-      if (false)
+      if (true)
       {
         let             pdu;
         let             data;
@@ -97,14 +97,14 @@ qx.Class.define("mqtt.Application",
         pdu = new mqtt.Buffer(32);
         
         // expect "\xF0\x90\x80\x81'
-        len += mqtt.pdu.String.format("\uD800\uDC01", pdu);
+        len += mqtt.pdu.primitive.String.format("\uD800\uDC01", pdu);
 
-        len += mqtt.pdu.String.format("hello", pdu);
+        len += mqtt.pdu.primitive.String.format("hello", pdu);
 
         data = pdu.finalize(true);
         this.debug(`len=${len}, pdu=${data.toString()}`);
 
-        str = mqtt.pdu.String.parse(data);
+        str = mqtt.pdu.primitive.String.parse(data);
         this.debug(`parse String=${str}`);
       }
     }

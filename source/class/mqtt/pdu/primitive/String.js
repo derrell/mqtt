@@ -4,7 +4,7 @@
  * Authors   : Derrell Lipman (derrell)
  */
 
-qx.Class.define("mqtt.pdu.String",
+qx.Class.define("mqtt.pdu.primitive.String",
 {
   type : "static",
 
@@ -32,7 +32,7 @@ qx.Class.define("mqtt.pdu.String",
       // Convert the string to UTF-8 and convert it to an array of integer
       // values
       value =
-        mqtt.pdu.String.encode(value)
+        mqtt.pdu.primitive.String.encode(value)
         .split("")
         .map(c => +c.charCodeAt(0));
 
@@ -47,7 +47,7 @@ qx.Class.define("mqtt.pdu.String",
       }
       
       // Add the string length
-      mqtt.pdu.Uint16.format(len, pdu);
+      mqtt.pdu.primitive.Uint16.format(len, pdu);
       
       // Return the length we've prepended
       return len + 2;
@@ -74,7 +74,7 @@ qx.Class.define("mqtt.pdu.String",
       }
 
       // Get the string length
-      len = mqtt.pdu.Uint16.parse(pdu, version);
+      len = mqtt.pdu.primitive.Uint16.parse(pdu, version);
 
       // Catch buffer overruns. Ensure that length is available
       if (pdu.next + len > pdu.length)
@@ -89,7 +89,7 @@ qx.Class.define("mqtt.pdu.String",
       pdu.next += len;
 
       // Return the decoded string
-      return mqtt.pdu.String.decode(string);
+      return mqtt.pdu.primitive.String.decode(string);
     }
   },
 

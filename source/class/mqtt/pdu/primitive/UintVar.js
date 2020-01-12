@@ -4,7 +4,7 @@
  * Authors   : Derrell Lipman (derrell)
  */
 
-qx.Class.define("mqtt.pdu.UintVar",
+qx.Class.define("mqtt.pdu.primitive.UintVar",
 {
   type : "static",
 
