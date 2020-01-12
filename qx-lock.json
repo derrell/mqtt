@@ -1,0 +1,21 @@
+{
+  "libraries": [
+    {
+      "library_name": "Commandline Testrunner for Qooxdoo Apps",
+      "library_version": "0.4.7",
+      "path": "qx_packages/qooxdoo_qxl_testtapper_v0_4_7",
+      "uri": "qooxdoo/qxl.testtapper",
+      "repo_name": "qooxdoo/qxl.testtapper",
+      "repo_tag": "v0.4.7"
+    },
+    {
+      "library_name": "logpane",
+      "library_version": "0.1.4",
+      "path": "qx_packages/qooxdoo_qxl_logpane_v0_1_4",
+      "uri": "qooxdoo/qxl.logpane",
+      "repo_name": "qooxdoo/qxl.logpane",
+      "repo_tag": "v0.1.4"
+    }
+  ],
+  "version": "2.1.0"
+}
