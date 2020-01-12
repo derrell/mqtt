@@ -74,7 +74,7 @@ qx.Class.define("mqtt.pdu.String",
       pdu.next += len;
 
       // Return the decoded string
-      return this.constructor.decode(pdu);
+      return this.constructor.decode(string);
     }
   },
 
@@ -322,6 +322,7 @@ qx.Class.define("mqtt.pdu.String",
       // djl added; clone of utf8decode without initial conversion
       function utf8decodeByteArray(arr) {
         byteArray = arr;
+        byteCount = byteArray.length;
         byteIndex = 0;
         var codePoints = [];
         var tmp;

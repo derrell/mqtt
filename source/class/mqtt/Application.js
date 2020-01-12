@@ -36,7 +36,7 @@ qx.Class.define("mqtt.Application",
       }
 
       // Test fixed-size integer functions
-      if (true)
+      if (false)
       {
         let             pdu;
         let             data;
@@ -63,7 +63,7 @@ qx.Class.define("mqtt.Application",
       }
 
       // Test UTF-8 String functions
-      if (false)
+      if (true)
       {
         let             pdu;
         let             data;
@@ -80,6 +80,9 @@ qx.Class.define("mqtt.Application",
 
         data = pdu.finalize(true);
         this.debug(`len=${len}, pdu=${data.toString()}`);
+
+        str = mqtt.pdu.String.parse(data);
+        this.debug(`parse String=${str}`);
       }
     }
   }
