@@ -6,38 +6,53 @@
 
 qx.Class.define("mqtt.pdu.String",
 {
-  extend : qx.core.Object,
-
-  construct : function(value)
-  {
-    this.base(arguments);
-
-    // Save the provided value
-    this.setValue(value);
-  },
-
-  properties :
-  {
-    /** The current value of this 2-byte integer */
-    value :
-    {
-      init      : ""
-    }
-  },
+  type : "static",
 
   statics :
   {
     /**
-     * Instantiate a new one of these objects and set its value
+     * Prepend this object's value to the provided pdu buffer
      *
-     * @param {Number} value
-     *   This integer's value
+     * @param {String} value
+     *   The value to be formatted and added to the PDU
+     *
+     * @param {mqtt.Buffer} pdu
+     *   PDU to which the value should be prepended
+     *
+     * @param {Number?5.0} version
+     *   MQTT protocol version to comply with to format/parse
+     *
+     * @return {Number}
+     *   Number of octets prepended to the PDU
      */
-    create : function(value)
+    format : function(value, pdu, version = 5.0)
     {
-      return new this.constructor(value);
-    },
+      let             len;
 
+      // Convert the string to UTF-8 and convert it to an array of integer
+      // values
+      value =
+        mqtt.pdu.String.encode(value)
+        .split("")
+        .map(c => +c.charCodeAt(0));
+
+      // Save the number of bytes
+      len = value.length;
+
+      // MQTT 1.5.4? UTF-8 encoded character data is placed into the buffer,
+      // preceeded by a 2-byte length
+      while (value.length > 0)
+      {
+        pdu.prepend(value.pop());
+      }
+      
+      // Add the string length
+      mqtt.pdu.Uint16.format(len, pdu);
+      
+      // Return the length we've prepended
+      return len + 2;
+    },
+    
     /**
      * Parse an object of this type, beginning at the given pdu position
      *
@@ -74,51 +89,7 @@ qx.Class.define("mqtt.pdu.String",
       pdu.next += len;
 
       // Return the decoded string
-      return this.constructor.decode(string);
-    }
-  },
-
-  members :
-  {
-    /**
-     * Prepend this object's value to the provided pdu buffer
-     *
-     * @param {mqtt.Buffer} pdu
-     *   PDU to which the value should be prepended
-     *
-     * @param {Number} version
-     *   MQTT protocol version to comply with to format/parse
-     *
-     * @return {Number}
-     *   Number of octets prepended to the PDU
-     */
-    format : function(pdu, version = 5.0)
-    {
-      let             len;
-      let             value;
-
-      // Convert the string to UTF-8 and convert it to an array of integer
-      // values
-      value =
-        this.constructor.encode(this.getValue())
-        .split("")
-        .map(c => +c.charCodeAt(0));
-
-      // Save the number of bytes
-      len = value.length;
-
-      // MQTT 1.5.4? UTF-8 encoded character data is placed into the buffer,
-      // preceeded by a 2-byte length
-      while (value.length > 0)
-      {
-        pdu.prepend(value.pop());
-      }
-      
-      // Add the string length
-      mqtt.pdu.Uint16.create(len).format(pdu);
-      
-      // Return the length we've prepended
-      return 0;
+      return mqtt.pdu.String.decode(string);
     }
   },
 

@@ -36,7 +36,7 @@ qx.Class.define("mqtt.Application",
       }
 
       // Test fixed-size integer functions
-      if (false)
+      if (true)
       {
         let             pdu;
         let             data;
@@ -45,11 +45,8 @@ qx.Class.define("mqtt.Application",
 
         pdu = new mqtt.Buffer(16);
         
-        int = mqtt.pdu.Uint16.create(0x0102);
-        len += int.format(pdu);
-
-        int = mqtt.pdu.Uint32.create(0x03040506);
-        len += int.format(pdu);
+        len += mqtt.pdu.Uint16.format(0x0102, pdu);
+        len += mqtt.pdu.Uint32.format(0x03040506, pdu);
 
         data = pdu.finalize(true);
         this.debug(`len=${len}, pdu=${data.toString()}`);
@@ -72,11 +69,10 @@ qx.Class.define("mqtt.Application",
 
         pdu = new mqtt.Buffer(32);
         
-        str = mqtt.pdu.String.create("\uD800\uDC01");
-        len += str.format(pdu); // expect "\xF0\x90\x80\x81'
+        // expect "\xF0\x90\x80\x81'
+        len += mqtt.pdu.String.format("\uD800\uDC01", pdu);
 
-        str = mqtt.pdu.String.create("hello");
-        len += str.format(pdu);
+        len += mqtt.pdu.String.format("hello", pdu);
 
         data = pdu.finalize(true);
         this.debug(`len=${len}, pdu=${data.toString()}`);

@@ -6,38 +6,39 @@
 
 qx.Class.define("mqtt.pdu.Uint32",
 {
-  extend : qx.core.Object,
-
-  construct : function(value)
-  {
-    this.base(arguments);
-
-    // Save the provided value
-    this.setValue(value);
-  },
-
-  properties :
-  {
-    /** The current value of this 4-byte integer */
-    value :
-    {
-      init : 0
-    }
-  },
+  type : "static",
 
   statics :
   {
     /**
-     * Instantiate a new one of these objects and set its value
+     * Prepend this object's value to the provided pdu buffer
      *
      * @param {Number} value
-     *   This integer's value
+     *   The value to be formatted and added to the PDU
+     *
+     * @param {mqtt.Buffer} pdu
+     *   PDU to which the value should be prepended
+     *
+     * @param {Number?5.0} version
+     *   MQTT protocol version to comply with to format/parse
+     *
+     * @return {Number}
+     *   Number of octets prepended to the PDU
      */
-    create : function(value)
+    format : function(value, pdu, version = 5.0)
     {
-      return new this.constructor(value);
-    },
+      // MQTT 1.5.3: big-endian: high-order byte precedes successively
+      // lower-order byte.  We're prepending, so prepend in the opposite
+      // order.
+      pdu.prepend((value >> 0) & 0xff);
+      pdu.prepend((value >> 8) & 0xff);
+      pdu.prepend((value >> 16) & 0xff);
+      pdu.prepend((value >> 24) & 0xff);
 
+      // Return the length we've prepended
+      return 4;
+    },
+    
     /**
      * Parse an object of this type, beginning at the given pdu position
      *
@@ -61,39 +62,5 @@ qx.Class.define("mqtt.pdu.Uint32",
         pdu[pdu.next++] << 8 |
         pdu[pdu.next++] << 0);
     }    
-  },
-
-  members :
-  {
-    /**
-     * Prepend this object's value to the provided pdu buffer
-     *
-     * @param {mqtt.Buffer} pdu
-     *   PDU to which the value should be prepended
-     *
-     * @param {Number} version
-     *   MQTT protocol version to comply with to format/parse
-     *
-     * @return {Number}
-     *   Number of octets prepended to the PDU
-     */
-    format : function(pdu, version = 5.0)
-    {
-      let             value;
-
-      // Retrieve this integer's value
-      value = this.getValue();
-
-      // MQTT 1.5.3: big-endian: high-order byte precedes successively
-      // lower-order byte.  We're prepending, so prepend in the opposite
-      // order.
-      pdu.prepend((value >> 0) & 0xff);
-      pdu.prepend((value >> 8) & 0xff);
-      pdu.prepend((value >> 16) & 0xff);
-      pdu.prepend((value >> 24) & 0xff);
-
-      // Return the length we've prepended
-      return 4;
-    }
   }
 });
