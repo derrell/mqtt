@@ -10,6 +10,8 @@ qx.Class.define("mqtt.Buffer",
 
   construct : function(unitBufferSize = this.constructor.UNIT_BUFFER_SIZE)
   {
+    this.base(arguments);
+
     // Save the buffer size
     this._unitBufferSize = unitBufferSize;
 
@@ -63,11 +65,14 @@ qx.Class.define("mqtt.Buffer",
      * respectively, the index of the first and last data elements in the
      * array.
      *
+     * @param {Boolean} bSlice
+     *   If true, return only the used slice of the array.
+     *
      * @return {Uint8Array}
      *   The final data in the buffer, with `first` and `last` properties to
      *   indicate the indexes of the first and last data octet in the array.
      */
-    finalize : function()
+    finalize : function(bSlice)
     {
       let             arr;
 
@@ -94,21 +99,30 @@ qx.Class.define("mqtt.Buffer",
 
         // This new array becomes the new _current
         this._current = arr;
-        this._next = -1;
+        this._next = 0;
         this._pool = [ arr ];
 
         // The new buffer's data begins at position 0
         arr.first = 0;
+      }
+      else if (bSlice)
+      {
+        arr = this._current.slice();
+        arr.first = this._next + 1;
+        arr.next = arr.first;
       }
       else
       {
         // There's only a single array. Save its starting position.
         arr = this._current;
         arr.first = this._next + 1;
+        arr.next = arr.first;
       }
 
       // Let 'em know where the last element is too
       arr.last = arr.length - 1;
+
+      // If they requested just the used slice, slice it.
       return arr;
     },
 

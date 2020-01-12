@@ -14,23 +14,41 @@
     }
   ],
   "defaultTarget": "source",
-  "locales": ["en"],
-
+  "locales": [
+    "en"
+  ],
   "applications": [
     {
       "class": "mqtt.Application",
       "theme": "",
       "name": "mqtt",
-      "type" : "node",
-      "include" : [
-         "qx.core.BaseInit"
+      "type": "node",
+      "include": [
+        "qx.core.BaseInit"
       ],
-      "exclude" : [
-         "qx.bom.Selector",
-         "qx.bom.client.Html",
-         "qx.event.handler.Pointer",
-         "qx.event.handler.Gesture",
-         "qx.event.handler.PointerCore"
+      "exclude": [
+        "qx.bom.Selector",
+        "qx.bom.client.Html",
+        "qx.event.handler.Pointer",
+        "qx.event.handler.Gesture",
+        "qx.event.handler.PointerCore"
+      ]
+    },
+    {
+      "class": "qxl.testtapper.Application",
+      "name": "testtapper",
+      "theme": "qx.theme.Simple",
+      "title": "Qooxdoo TestTAPper",
+      "environment": {
+        "qx.icontheme": "Tango",
+        "testtapper.testNameSpace": "mqtt.test"
+      },
+      "include": [
+        "*.test.*",
+        "*.*.test.*"
+      ],
+      "exclude": [
+        "qx.test.*"
       ]
     }
   ]
