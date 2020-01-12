@@ -36,7 +36,7 @@ qx.Class.define("mqtt.Application",
       }
 
       // Test fixed-size integer functions
-      if (true)
+      if (false)
       {
         let             pdu;
         let             data;
@@ -59,8 +59,35 @@ qx.Class.define("mqtt.Application",
 
       }
 
-      // Test UTF-8 String functions
+      // Test variable-size integer function
       if (true)
+      {
+        let             i;
+        let             pdu;
+        let             data;
+        let             int;
+        let             len = 0;
+
+        pdu = new mqtt.Buffer(16);
+        
+        len += mqtt.pdu.UintVar.format(127, pdu);
+        len += mqtt.pdu.UintVar.format(16383, pdu);
+        len += mqtt.pdu.UintVar.format(2097151, pdu);
+        len += mqtt.pdu.UintVar.format(2097152, pdu);
+
+        data = pdu.finalize(true);
+        this.debug(`len=${len}, pdu=${data.toString()}`);
+
+        for (i = 0; i < 4; i++)
+        {
+          int = mqtt.pdu.UintVar.parse(data);
+          this.debug(`parse UintVar=${int}`);
+        }
+        this.debug("expected 2097152, 2097151, 16383, 127");
+      }
+
+      // Test UTF-8 String functions
+      if (false)
       {
         let             pdu;
         let             data;
