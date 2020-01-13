@@ -44,12 +44,9 @@
         "testtapper.testNameSpace": "mqtt.test"
       },
       "include": [
-        "*.test.*",
-        "*.*.test.*"
+        "mqtt.test.*"
       ],
-      "exclude": [
-        "qx.test.*"
-      ]
+      "exclude": []
     }
   ]
 }

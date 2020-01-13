@@ -18,14 +18,19 @@ qx.Class.define("mqtt.test.Pdu",
       buf.prepend(3);
       buf.prepend(4);
       buf.prepend(5);
-      data = buf.finalize();
+      data = buf.finalize(true);
 
       correct = new Uint8Array(5);
-      correct[0] = 1;
-      correct[1] = 2;
+      correct[0] = 5;
+      correct[1] = 4;
       correct[2] = 3;
-      correct[3] = 4;
-      correct[4] = 5;
+      correct[3] = 2;
+      correct[4] = 1;
+
+      // Convert buffer and typed array to regular array
+      data = Array.prototype.slice.apply(data);
+      correct = Array.prototype.slice.apply(correct);
+
       this.assertArrayEquals(data, correct);
     }
   }

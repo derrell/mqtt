@@ -35,6 +35,35 @@ qx.Class.define("mqtt.Application",
           `first=${data.first}, last=${data.last}: ${data.toString()}`);
       }
 
+      // Another buffer module test
+      if (true)
+      {
+        let             buf;
+        let             data;
+        let             correct;
+
+        buf = new mqtt.Buffer(2);
+        buf.prepend(1);
+        buf.prepend(2);
+        buf.prepend(3);
+        buf.prepend(4);
+        buf.prepend(5);
+        data = buf.finalize(true);
+
+        correct = new Uint8Array(5);
+        correct[0] = 5;
+        correct[1] = 4;
+        correct[2] = 3;
+        correct[3] = 2;
+        correct[4] = 1;
+        this.debug(
+          `data=${JSON.stringify(data)}, correct=${JSON.stringify(correct)}`);
+
+        data = Array.prototype.slice.apply(data);
+        correct = Array.prototype.slice.apply(correct);
+        this.assertArrayEquals(data, correct);
+      }
+
       // Test fixed-size integer functions
       if (true)
       {
