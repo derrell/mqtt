@@ -3,5 +3,4 @@ node_modules
 output
 qx_packages
 .package-cache.json
-
-
+.nyc_output
