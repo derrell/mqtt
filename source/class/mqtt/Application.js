@@ -79,6 +79,14 @@ qx.Class.define("mqtt.Application",
 
         data = pdu.finalize(true);
         this.debug(`len=${len}, pdu=${data.toString()}`);
+        {
+          this.debug(`data=${JSON.stringify(data)}`);
+          let x = Array.prototype.slice.apply(data);
+          this.debug(`x=${x.toString()}`);
+          let y = Uint8Array.from( [ 0,0,0,0,0,0,0,0,0,0,3,4,5,6,1,2 ] );
+          y = Array.prototype.slice.apply(y);
+          this.debug(`y=${y.toString()}`);
+        }
 
         int = mqtt.pdu.primitive.Uint32.parse(data);
         this.debug(`parse Uint32=${int}`);
@@ -135,6 +143,9 @@ qx.Class.define("mqtt.Application",
 
         str = mqtt.pdu.primitive.String.parse(data);
         this.debug(`parse String=${str}`);
+
+        str = mqtt.pdu.primitive.String.parse(data);
+        this.debug(`str=${str}`);
       }
     }
   }
