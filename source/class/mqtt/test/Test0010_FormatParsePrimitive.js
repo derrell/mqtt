@@ -20,7 +20,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       data = Array.prototype.slice.apply(data);
       correct = Uint8Array.from( [ 5, 4, 3, 2, 1 ] );
       correct = Array.prototype.slice.apply(correct);
-      this.assertArrayEquals(data, correct);
+      this.assertArrayEquals(correct, data);
     },
 
     "test buffer with finalize false" : function()
@@ -36,7 +36,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       data = Array.prototype.slice.apply(data);
       correct = Uint8Array.from( [ 5, 4, 3, 2, 1 ] );
       correct = Array.prototype.slice.apply(correct);
-      this.assertArrayEquals(data, correct);
+      this.assertArrayEquals(correct, data);
     },
     
     "test integer fixed-size" : function()
@@ -59,13 +59,13 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       got = Array.prototype.slice.apply(data);
       correct = Uint8Array.from( [ 0,0,0,0,0,0,0,0,0,0,3,4,5,6,1,2 ] );
       correct = Array.prototype.slice.apply(correct);
-      this.assertArrayEquals(got, correct);
+      this.assertArrayEquals(correct, got);
 
       // Parse the two values and validate they match what we started with
       int = mqtt.pdu.primitive.Uint32.parse(data);
-      this.assertIdentical(int, 0x03040506);
+      this.assertIdentical(0x03040506, int);
       int = mqtt.pdu.primitive.Uint16.parse(data);
-      this.assertIdentical(int, 0x0102);
+      this.assertIdentical(0x0102, int);
     },
 
     "test integer variable-size" : function()
@@ -93,20 +93,20 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       correct = Uint8Array.from(
         [ 0,0,0,0,0,0,128,128,128,1,255,255,127,255,127,127 ] );
       correct = Array.prototype.slice.apply(correct);
-      this.assertArrayEquals(got, correct);
+      this.assertArrayEquals(correct, got);
 
       // Parse the four values and validate they match what we started with
       int = mqtt.pdu.primitive.UintVar.parse(data);
-      this.assertIdentical(int, 2097152);
+      this.assertIdentical(2097152, int);
 
       int = mqtt.pdu.primitive.UintVar.parse(data);
-      this.assertIdentical(int, 2097151);
+      this.assertIdentical(2097151, int);
 
       int = mqtt.pdu.primitive.UintVar.parse(data);
-      this.assertIdentical(int, 16383);
+      this.assertIdentical(16383, int);
 
       int = mqtt.pdu.primitive.UintVar.parse(data);
-      this.assertIdentical(int, 127);
+      this.assertIdentical(127, int);
     },
 
     "test utf-8 string" : function()
@@ -135,13 +135,13 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
           5,104,101,108,108,111,0,4,240,144,128,129
         ]);
       correct = Array.prototype.slice.apply(correct);
-      this.assertArrayEquals(got, correct);
+      this.assertArrayEquals(correct, got);
 
       str = mqtt.pdu.primitive.String.parse(data);
-      this.assertEquals(str, "hello");
+      this.assertEquals("hello", str);
 
       str = mqtt.pdu.primitive.String.parse(data);
-      this.assertEquals(str, "𐀁");
+      this.assertEquals("𐀁", str);
     }
   }
 });
