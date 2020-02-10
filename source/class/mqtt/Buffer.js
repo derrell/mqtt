@@ -25,7 +25,39 @@ qx.Class.define("mqtt.Buffer",
   statics :
   {
     /** The default size of each individual buffer in the stream */
-    UNIT_BUFFER_SIZE : 64 * 1024
+    UNIT_BUFFER_SIZE : 64 * 1024,
+
+    /**
+     * Create a finalized buffer from a binary array, either a Uint8Array or
+     * a Buffer.
+     *
+     * @param {Uint8Array|Buffer}
+     *   The input array or buffer
+     *
+     * @return {Uint8Array}
+     *   The returned array is not a copy. It is the original array if a
+     *   Uint8Array was provided, and it is the underlying Uint8Array if a
+     *   Buffer is provided. The return array, however, has the `first`,
+     *   `next`, and `last` properties set, as if a formatted buffer had been
+     *   finalized.
+     */
+    finalizeFrom : function(arr)
+    {
+      // If we received a buffer...
+      if (arr instanceof Buffer)
+      {
+        // ... then retrieve the underlying Uint8Array
+        arr = arr.buffer;
+      }
+
+      // Add common finalization members
+      arr.first = 0;
+      arr.next = arr.first;
+      arr.last = arr.length - 1;
+
+      // Give 'em what they came for!
+      return arr;
+    }
   },
 
   members :
@@ -45,6 +77,9 @@ qx.Class.define("mqtt.Buffer",
      *
      * @param {Uint8} octet
      *   The octet to be prepended
+     *
+     * @return {Number}
+     *   The number of bytes prepended, always 1, for interface consistency
      */
     prepend : function(octet)
     {
@@ -57,6 +92,8 @@ qx.Class.define("mqtt.Buffer",
 
       // Prepend the specified octet
       this._current[this._next--] = octet;
+
+      return 1;
     },
 
     /**

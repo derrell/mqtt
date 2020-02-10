@@ -1,0 +1,7 @@
+npx qx test
+
+OR
+
+npx qx server
+then...
+http://localhost:8080/testtapper/

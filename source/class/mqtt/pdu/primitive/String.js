@@ -29,6 +29,10 @@ qx.Class.define("mqtt.pdu.primitive.String",
     {
       let             len;
 
+      // Validate input
+      qx.core.Assert.assertString(value);
+      qx.core.Assert.assertInstance(pdu, mqtt.Buffer);
+
       // Convert the string to UTF-8 and convert it to an array of integer
       // values
       value =

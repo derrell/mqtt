@@ -4,7 +4,7 @@
  * Authors   : Derrell Lipman (derrell)
  */
 
-qx.Class.define("mqtt.pdu.primitive.Uint16",
+qx.Class.define("mqtt.pdu.primitive.Byte",
 {
   type : "static",
 
@@ -29,17 +29,15 @@ qx.Class.define("mqtt.pdu.primitive.Uint16",
     {
       // Validate argument
       qx.core.Assert.assert(
-        typeof value == "number" && (value & 0xffff) === value,
-        "Uint16 value must be a unsigned integer in 0x0000 - 0xffff");
+        typeof value == "number" && (value & 0xff) === value,
+        "Byte value must be a unsigned integer in 0x00 - 0xff");
       qx.core.Assert.assertInstance(pdu, mqtt.Buffer);
 
-      // MQTT 1.5.2: big-endian: high-order byte precedes low-order byte.
-      // We're prepending, so prepend in the opposite order
-      pdu.prepend((value >> 0) & 0xff);
-      pdu.prepend((value >> 8) & 0xff);
+      // Prepend the byte value to the PDU
+      pdu.prepend(value & 0xff);
 
       // Return the length we've prepended
-      return 2;
+      return 1;
     },
     
     /**
@@ -54,14 +52,12 @@ qx.Class.define("mqtt.pdu.primitive.Uint16",
     parse : function(pdu, version = 5.0)
     {
       // Catch buffer overruns
-      if (pdu.next + 2 > pdu.length)
+      if (pdu.next + 1 > pdu.length)
       {
         throw new Error("Protocol violation: insufficient data");
       }
 
-      return (
-        (pdu[pdu.next++] << 8) |
-         pdu[pdu.next++] << 0);
+      return (pdu[pdu.next++]);
     }    
   }
 });

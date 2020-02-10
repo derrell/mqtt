@@ -4,7 +4,7 @@
  * Authors   : Derrell Lipman (derrell)
  */
 
-qx.Class.define("mqtt.pdu.primitive.Uint16",
+qx.Class.define("mqtt.pdu.primitive.Binary",
 {
   type : "static",
 
@@ -14,7 +14,8 @@ qx.Class.define("mqtt.pdu.primitive.Uint16",
      * Format this object's value into the provided pdu buffer
      *
      * @param {Number} value
-     *   The value to be formatted and added to the PDU
+     *   The value to be formatted and added to the PDU. The value must be a
+     *   Uint8Array.
      *
      * @param {mqtt.Buffer} pdu
      *   PDU to which the value should be prepended
@@ -27,19 +28,29 @@ qx.Class.define("mqtt.pdu.primitive.Uint16",
      */
     format : function(value, pdu, version = 5.0)
     {
-      // Validate argument
-      qx.core.Assert.assert(
-        typeof value == "number" && (value & 0xffff) === value,
-        "Uint16 value must be a unsigned integer in 0x0000 - 0xffff");
-      qx.core.Assert.assertInstance(pdu, mqtt.Buffer);
+      let             i;
+      let             len;
 
-      // MQTT 1.5.2: big-endian: high-order byte precedes low-order byte.
-      // We're prepending, so prepend in the opposite order
-      pdu.prepend((value >> 0) & 0xff);
-      pdu.prepend((value >> 8) & 0xff);
+      qx.core.Assert.assertInstance(
+        value,
+        Uint8Array,
+        "Binary data must be provided in the form of a Uint8Array");
+      qx.core.Assert.assertInstance(pdu, mqtt.Buffer);
+      
+      // Get the binary data length
+      len = value.length;
+
+      // Prepend the value
+      for (i = len - 1; i >= 0; i--)
+      {
+        pdu.prepend(value[i] & 0xff);
+      }
+
+      // prepend the length
+      len += mqtt.pdu.primitive.Uint16.format(len, pdu, version);
 
       // Return the length we've prepended
-      return 2;
+      return len;
     },
     
     /**
@@ -53,15 +64,22 @@ qx.Class.define("mqtt.pdu.primitive.Uint16",
      */
     parse : function(pdu, version = 5.0)
     {
+      let             len;
+      let             value;
+
+      // Retrieve the length of the binary data
+      len = mqtt.pdu.primitive.Uint16.parse(pdu, version);
       // Catch buffer overruns
-      if (pdu.next + 2 > pdu.length)
+      if (pdu.next + len  > pdu.length)
       {
         throw new Error("Protocol violation: insufficient data");
       }
 
-      return (
-        (pdu[pdu.next++] << 8) |
-         pdu[pdu.next++] << 0);
+      // Retrieve the value
+      value = pdu.slice(pdu.next, pdu.next + len);
+      pdu.next += len;
+
+      return value;
     }    
   }
 });

@@ -39,6 +39,31 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       this.assertArrayEquals(correct, data);
     },
     
+    "test byte" : function()
+    {
+      let             pdu;
+      let             got;
+      let             data;
+      let             correct;
+      let             len = 0;
+
+      pdu = new mqtt.Buffer(6);
+
+      // Format four bytes into the PDU
+      len += mqtt.pdu.primitive.Byte.format(0x01, pdu);
+      len += mqtt.pdu.primitive.Byte.format(0x02, pdu);
+      len += mqtt.pdu.primitive.Byte.format(0x03, pdu);
+      len += mqtt.pdu.primitive.Byte.format(0x04, pdu);
+      data = pdu.finalize(true);
+      
+      // Validate that the PDU contains what it should
+      got = Array.prototype.slice.apply(data);
+      correct = Uint8Array.from( [ 0x00,0x00,0x04,0x03,0x02,0x01 ] );
+      correct = Array.prototype.slice.apply(correct);
+      this.assertArrayEquals(correct, got);
+      
+    },
+
     "test integer fixed-size" : function()
     {
       let             pdu;
@@ -142,6 +167,35 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
 
       str = mqtt.pdu.primitive.String.parse(data);
       this.assertEquals("𐀁", str);
+    },
+
+    "test binary" : function()
+    {
+      let             pdu;
+      let             got;
+      let             str;
+      let             data;
+      let             test;
+      let             correct;
+      let             len = 0;
+
+      pdu = new mqtt.Buffer(16);
+
+      test = Uint8Array.from( [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ] );
+      len += mqtt.pdu.primitive.Binary.format(test, pdu);
+      data = pdu.finalize(true);
+
+      // Validate that the PDU contains what it should
+      got = Array.prototype.slice.apply(data);
+      correct = Uint8Array.from(
+        [
+          0,0,0,0,0,10,1,2,3,4,5,6,7,8,9,10
+        ]);
+      correct = Array.prototype.slice.apply(correct);
+      this.assertArrayEquals(correct, got);
+
+      data = mqtt.pdu.primitive.Binary.parse(data);
+      this.assertArrayEquals(Array.from(data), Array.from(test));
     }
   }
 });

@@ -31,6 +31,12 @@ qx.Class.define("mqtt.pdu.primitive.UintVar",
       let             len = 0;
       let             arr = new Uint8Array(4);
 
+      // Validate argument
+      qx.core.Assert.assert(
+        typeof value == "number" && (value & 0xffffffff) === value,
+        "UintVar value must be a unsigned integer in 0x00000000 - 0xffffffff");
+      qx.core.Assert.assertInstance(pdu, mqtt.Buffer);
+
       // MQTT 1.5.5: variable byte integer: 1, 2, 3, or 4 bytes depending on
       // the integer's value. The high order bit of a byte indicates that
       // there are more bytes of data. The 7 lower bits represent actual

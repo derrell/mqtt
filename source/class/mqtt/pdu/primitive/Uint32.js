@@ -27,6 +27,12 @@ qx.Class.define("mqtt.pdu.primitive.Uint32",
      */
     format : function(value, pdu, version = 5.0)
     {
+      // Validate argument
+      qx.core.Assert.assert(
+        typeof value == "number" && (value & 0xffffffff) === value,
+        "Uint32 value must be a unsigned integer in 0x00000000 - 0xffffffff");
+      qx.core.Assert.assertInstance(pdu, mqtt.Buffer);
+
       // MQTT 1.5.3: big-endian: high-order byte precedes successively
       // lower-order byte.  We're prepending, so prepend in the opposite
       // order.
