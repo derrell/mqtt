@@ -12,7 +12,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.PayloadFormatIndicator;
       const           test = 0x23;
 
@@ -38,7 +38,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.MessageExpiryInterval;
       const           test = 0x23694287;
 
@@ -64,7 +64,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.ContentType;
       const           test = "application/json";
 
@@ -90,7 +90,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.ResponseTopic;
       const           test = "my-topic";
 
@@ -116,7 +116,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.CorrelationData;
       const           testArr = [ 2, 4, 6, 8, 10 ];
       const           testUint8Arr = Uint8Array.from(testArr);
@@ -142,7 +142,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.SubscriptionIdentifier;
       const           test = 0x236942;
 
@@ -168,7 +168,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.SessionExpiryInterval;
       const           test = 0x23694287;
 
@@ -194,7 +194,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.AssignedClientIdentifier;
       const           test = "I am a client!";
 
@@ -220,7 +220,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.ServerKeepAlive;
       const           test = 0x4223;
 
@@ -246,7 +246,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.AuthenticationMethod;
       const           test = "the best auth algorithm";
 
@@ -272,7 +272,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.RequestProblemInformation;
       const           test = 0x42;
 
@@ -298,7 +298,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.WillDelayInterval;
       const           test = 0x23426987;
 
@@ -324,7 +324,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.RequestResponseInformation;
       const           test = 0x23;
 
@@ -350,7 +350,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.ResponseInformation;
       const           test = "My response information";
 
@@ -376,7 +376,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.ServerReference;
       const           test = "qooxdoo mqtt server";
 
@@ -402,7 +402,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.ReasonString;
       const           test = "it's broken!";
 
@@ -428,7 +428,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.ReceiveMaximum;
       const           test = 0x4223;
 
@@ -454,7 +454,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.TopicAliasMaximum;
       const           test = 0x4223;
 
@@ -480,7 +480,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.TopicAlias;
       const           test = 0x4223;
 
@@ -506,7 +506,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.MaximumQoS;
       const           test = 0x23;
 
@@ -532,7 +532,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.RetainAvailable;
       const           test = 0x23;
 
@@ -558,7 +558,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.UserProperty;
       const           test = [ "key", "value" ];
 
@@ -584,7 +584,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.MaximumPacketSize;
       const           test = 0x23426987;
 
@@ -610,7 +610,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.WildcardSubscriptionAvailable;
       const           test = 0x23;
 
@@ -636,7 +636,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.SubscriptionIdentifierAvailable;
       const           test = 0x23;
 
@@ -662,7 +662,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       let             pdu;
       let             data;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
       const           id = Property.SharedSubscriptionAvailable;
       const           test = 0x23;
 

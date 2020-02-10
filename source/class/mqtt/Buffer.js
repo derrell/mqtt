@@ -40,6 +40,8 @@ qx.Class.define("mqtt.Buffer",
      *   Buffer is provided. The return array, however, has the `first`,
      *   `next`, and `last` properties set, as if a formatted buffer had been
      *   finalized.
+     *
+     * @ignore(Buffer)
      */
     finalizeFrom : function(arr)
     {

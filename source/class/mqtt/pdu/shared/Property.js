@@ -4,7 +4,7 @@
  * Authors   : Derrell Lipman (derrell)
  */
 
-qx.Class.define("mqtt.pdu.Property",
+qx.Class.define("mqtt.pdu.shared.Property",
 {
   type : "static",
 
@@ -33,7 +33,7 @@ qx.Class.define("mqtt.pdu.Property",
     {
       let             len;
       let             { id, value } = idAndValue;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
 
       // MQTT 2.2.2.2
       switch(id)
@@ -192,7 +192,7 @@ qx.Class.define("mqtt.pdu.Property",
     {
       let             id;
       let             value;
-      const           Property = mqtt.pdu.Property;
+      const           Property = mqtt.pdu.shared.Property;
 
       // Retrieve the id
       id = mqtt.pdu.primitive.UintVar.parse(pdu, version);
