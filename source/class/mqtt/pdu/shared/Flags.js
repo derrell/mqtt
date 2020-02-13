@@ -23,9 +23,8 @@ qx.Class.define("mqtt.pdu.shared.ControlType",
         qx.core.Assert.assert(qos === 0 || qos === 1 || qos === 2);
         qx.core.Assert.assert(retain === 0 || retain === 1);
         
-        return (dup  << 3 ||
-                qos << 1 ||
-                (retain ? 1 : 0) << 0);
+        // qos consumes two bits; others, one bit each
+        return (dup << 3 || qos << 1 || retain << 0);
       },
  
     /** Publish acknowledgement (QoS 1) */
