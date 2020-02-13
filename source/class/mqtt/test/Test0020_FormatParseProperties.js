@@ -2,11 +2,11 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
 {
   extend : qx.dev.unit.TestCase,
 
-  include : [qx.dev.unit.MRequirementsBasic],
+  include : [qx.dev.unit.MRequirementsBasic, qx.dev.unit.MMock],
 
   members :
   {
-    "test property PayloadFormatIndicator" : function()
+    "test: property PayloadFormatIndicator" : function()
     {
       let             len;
       let             pdu;
@@ -32,7 +32,31 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property MessageExpiryInterval" : function()
+    "test: property PayloadFormatIndicator with bad input" : function()
+    {
+      let             len;
+      let             pdu;
+      let             data;
+      let             value;
+      const           Property = mqtt.pdu.shared.Property;
+      const           id = Property.PayloadFormatIndicator;
+      const           test = 0x2369;
+
+      this.assertException(
+        () =>
+          {
+            pdu = new mqtt.Buffer(4);
+            len = Property.format(
+              {
+                id    : id,
+                value : test
+              },
+              pdu);
+            data = pdu.finalize();
+          });
+    },
+
+    "test: property MessageExpiryInterval" : function()
     {
       let             len;
       let             pdu;
@@ -58,7 +82,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property ContentType" : function()
+    "test: property ContentType" : function()
     {
       let             len;
       let             pdu;
@@ -84,7 +108,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property ResponseTopic" : function()
+    "test: property ResponseTopic" : function()
     {
       let             len;
       let             pdu;
@@ -110,7 +134,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property CorrelationData" : function()
+    "test: property CorrelationData" : function()
     {
       let             len;
       let             pdu;
@@ -136,7 +160,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertArrayEquals(testArr, Array.from(value.value));
     },
 
-    "test property SubscriptionIdentifier" : function()
+    "test: property SubscriptionIdentifier" : function()
     {
       let             len;
       let             pdu;
@@ -162,7 +186,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property SessionExpiryInterval" : function()
+    "test: property SessionExpiryInterval" : function()
     {
       let             len;
       let             pdu;
@@ -188,7 +212,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property AssignedClientIdentifier" : function()
+    "test: property AssignedClientIdentifier" : function()
     {
       let             len;
       let             pdu;
@@ -214,7 +238,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property ServerKeepAlive" : function()
+    "test: property ServerKeepAlive" : function()
     {
       let             len;
       let             pdu;
@@ -240,7 +264,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property AuthenticationMethod" : function()
+    "test: property AuthenticationMethod" : function()
     {
       let             len;
       let             pdu;
@@ -266,7 +290,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property RequestProblemInformation" : function()
+    "test: property RequestProblemInformation" : function()
     {
       let             len;
       let             pdu;
@@ -292,7 +316,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property WillDelayInterval" : function()
+    "test: property WillDelayInterval" : function()
     {
       let             len;
       let             pdu;
@@ -318,7 +342,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property RequestResponseInformation" : function()
+    "test: property RequestResponseInformation" : function()
     {
       let             len;
       let             pdu;
@@ -344,7 +368,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property ResponseInformation" : function()
+    "test: property ResponseInformation" : function()
     {
       let             len;
       let             pdu;
@@ -370,7 +394,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property ServerReference" : function()
+    "test: property ServerReference" : function()
     {
       let             len;
       let             pdu;
@@ -396,7 +420,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property ReasonString" : function()
+    "test: property ReasonString" : function()
     {
       let             len;
       let             pdu;
@@ -422,7 +446,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property ReceiveMaximum" : function()
+    "test: property ReceiveMaximum" : function()
     {
       let             len;
       let             pdu;
@@ -448,7 +472,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property TopicAliasMaximum" : function()
+    "test: property TopicAliasMaximum" : function()
     {
       let             len;
       let             pdu;
@@ -474,7 +498,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property TopicAlias" : function()
+    "test: property TopicAlias" : function()
     {
       let             len;
       let             pdu;
@@ -500,7 +524,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property MaximumQoS" : function()
+    "test: property MaximumQoS" : function()
     {
       let             len;
       let             pdu;
@@ -526,7 +550,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property RetainAvailable" : function()
+    "test: property RetainAvailable" : function()
     {
       let             len;
       let             pdu;
@@ -552,7 +576,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property UserProperty" : function()
+    "test: property UserProperty" : function()
     {
       let             len;
       let             pdu;
@@ -578,7 +602,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertArrayEquals(test, Array.from(value.value));
     },
 
-    "test property MaximumPacketSize" : function()
+    "test: property MaximumPacketSize" : function()
     {
       let             len;
       let             pdu;
@@ -604,7 +628,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property WildcardSubscriptionAvailable" : function()
+    "test: property WildcardSubscriptionAvailable" : function()
     {
       let             len;
       let             pdu;
@@ -630,7 +654,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property SubscriptionIdentifierAvailable" : function()
+    "test: property SubscriptionIdentifierAvailable" : function()
     {
       let             len;
       let             pdu;
@@ -656,7 +680,7 @@ qx.Class.define("mqtt.test.Test0020_FormatParseProperties",
       this.assertIdentical(test, value.value);
     },
 
-    "test property SharedSubscriptionAvailable" : function()
+    "test: property SharedSubscriptionAvailable" : function()
     {
       let             len;
       let             pdu;

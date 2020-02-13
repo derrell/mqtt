@@ -6,7 +6,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
 
   members :
   {
-    "test buffer with finalize true" : function()
+    "test: buffer with finalize true" : function()
     {
       let             buf;
       let             data;
@@ -23,7 +23,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       this.assertArrayEquals(correct, data);
     },
 
-    "test buffer with finalize false" : function()
+    "test: buffer with finalize false" : function()
     {
       let             buf;
       let             data;
@@ -39,7 +39,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       this.assertArrayEquals(correct, data);
     },
     
-    "test byte" : function()
+    "test: byte" : function()
     {
       let             pdu;
       let             got;
@@ -64,7 +64,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       
     },
 
-    "test integer fixed-size" : function()
+    "test: integer fixed-size" : function()
     {
       let             pdu;
       let             int;
@@ -93,7 +93,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       this.assertIdentical(0x0102, int);
     },
 
-    "test integer variable-size" : function()
+    "test: integer variable-size" : function()
     {
       let             i;
       let             pdu;
@@ -134,7 +134,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       this.assertIdentical(127, int);
     },
 
-    "test utf-8 string" : function()
+    "test: utf-8 string" : function()
     {
       let             pdu;
       let             got;
@@ -169,7 +169,7 @@ qx.Class.define("mqtt.test.Test0010_FormatParsePrimitive",
       this.assertEquals("𐀁", str);
     },
 
-    "test binary" : function()
+    "test: binary" : function()
     {
       let             pdu;
       let             got;
