@@ -23,13 +23,13 @@ qx.Class.define("mqtt.pdu.shared.Property",
      * @param {mqtt.Buffer} pdu
      *   PDU to which the value should be prepended
      *
-     * @param {Number?5.0} version
+     * @param {Number?0x05} version
      *   MQTT protocol version to comply with to format/parse
      *
      * @return {Number}
      *   Number of octets prepended to the PDU
      */
-    format : function(idAndValue, pdu, version = 5.0)
+    format : function(idAndValue, pdu, version = 0x05)
     {
       let             len;
       let             { id, value } = idAndValue;
@@ -188,7 +188,7 @@ qx.Class.define("mqtt.pdu.shared.Property",
      * @param {Number} version
      *   MQTT protocol version to comply with to format/parse
      */
-    parse : function(pdu, version = 5.0)
+    parse : function(pdu, version = 0x05)
     {
       let             id;
       let             value;
