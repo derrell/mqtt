@@ -13,12 +13,31 @@ qx.Class.define("mqtt.pdu.shared.Property",
     /**
      * Format this object's value into the provided pdu buffer
      *
-     * @param {Map} idAndValue
-     *   A map containing the id and property value, with keys `id` and
-     *   `value`.  The id is formatted and added to the PDU. The id must be
-     *   one of the constant members of mqtt.pdu.Property defined below, e.g.,
-     *   PayloadFormatIndicator.  The value is then formatted and added to the
-     *   PDU.
+     * @param {Map} data
+     *
+     *   A map containing the message type, id and property value, with keys
+     *   `messageType`, `id` and `value`.
+     *
+     *   The message type is one of the following:
+     *   - "CONNECT"
+     *   - "DISCONNECT"
+     *   - "Will Properties"
+     *   - "PUBLISH"
+     *   - "SUBSCRIBE"
+     *   - "UNSUBSCRIBE"
+     *   - "AUTH"
+     *   - "CONNACK"
+     *   - "PUBACK"
+     *   - "PUBREC"
+     *   - "PUBREL"
+     *   - "PUBCOMP"
+     *   - "SUBACK"
+     *   - "UNSUBACK"
+     *
+     *   The id is formatted and added to
+     *   the PDU. The id must be one of the constant members of
+     *   mqtt.pdu.Property defined below, e.g., PayloadFormatIndicator.  The
+     *   value is then formatted and added to the PDU.
      *
      * @param {mqtt.Buffer} pdu
      *   PDU to which the value should be prepended
@@ -29,148 +48,448 @@ qx.Class.define("mqtt.pdu.shared.Property",
      * @return {Number}
      *   Number of octets prepended to the PDU
      */
-    format : function(idAndValue, pdu, version = 0x05)
+    format : function(data, pdu, version = 0x05)
     {
       let             len;
-      let             { id, value } = idAndValue;
+      let             allowed;
+      let             { messageType, id, value } = data;
       const           Property = mqtt.pdu.shared.Property;
 
       // MQTT 2.2.2.2
       switch(id)
       {
       case Property.PayloadFormatIndicator :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "PUBLISH", "Will Properties" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `PayloadFormatIndicator is not valid in ${messageType}`);
+
         // byte
+        qx.core.Assert.assertInteger(
+          value,
+          "PayloadFormatIndicator value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0x00, 0xff,
+          "PayloadFormatIndicator value must be in [ 0x00, 0xff ]");
         len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
         break;
         
       case Property.MessageExpiryInterval :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "PUBLISH", "Will Properties" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `MessageExpiryInterval is not valid in ${messageType}`);
+
         // four-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "MessageExpiryInterval value must be a number");
         len = mqtt.pdu.primitive.Uint32.format(value, pdu, version);
         break;
         
       case Property.ContentType :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "PUBLISH", "Will Properties" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `ContentType is not valid in ${messageType}`);
+
         // utf-8 string
+        qx.core.Assert.assertString(
+          value,
+          "ContentType value must be a string");
         len = mqtt.pdu.primitive.String.format(value, pdu, version);
         break;
         
       case Property.ResponseTopic :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "PUBLISH", "Will Properties" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `ResponseTopic is not valid in ${messageType}`);
+
         // utf-8 string
+        qx.core.Assert.assertString(
+          value,
+          "ResponseTopic value must be a string");
         len = mqtt.pdu.primitive.String.format(value, pdu, version);
         break;
         
       case Property.CorrelationData :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "PUBLISH", "Will Properties" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `CorrelationData is not valid in ${messageType}`);
+
         // binary data
         len = mqtt.pdu.primitive.Binary.format(value, pdu, version);
         break;
         
       case Property.SubscriptionIdentifier :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "PUBLISH", "SUBSCRIBE" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `SubscriptionIdentifier is not valid in ${messageType}`);
+
         // variable byte integer
         len = mqtt.pdu.primitive.UintVar.format(value, pdu, version);
         break;
         
       case Property.SessionExpiryInterval :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNECT", "CONNACK", "DISCONNECT" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `SessionExpiryInterval is not valid in ${messageType}`);
+
         // four-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "SessionExpiryInterval value must be a number");
         len = mqtt.pdu.primitive.Uint32.format(value, pdu, version);
         break;
         
       case Property.AssignedClientIdentifier :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `AssignedClientIdentifier is not valid in ${messageType}`);
+
         // utf-8 string
+        qx.core.Assert.assertString(
+          value,
+          "AssignedClientIdentifier value must be a string");
         len = mqtt.pdu.primitive.String.format(value, pdu, version);
         break;
         
       case Property.ServerKeepAlive :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `ServerKeepAlive is not valid in ${messageType}`);
+
         // two-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "ServerKeepAlive value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0, 65535,
+          "ServerKeepAlive value must be in [ 0, 65535 ]");
         len = mqtt.pdu.primitive.Uint16.format(value, pdu, version);
         break;
         
       case Property.AuthenticationMethod :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNECT", "CONNACK", "AUTH" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `AuthenticationMethod is not valid in ${messageType}`);
+
         // utf-8 string
+        qx.core.Assert.assertString(
+          value,
+          "AuthenticationMethod value must be a string");
         len = mqtt.pdu.primitive.String.format(value, pdu, version);
         break;
         
+      case Property.AuthenticationData :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNECT", "CONNACK", "AUTH" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `AuthenticationData is not valid in ${messageType}`);
+
+        // binary data
+        len = mqtt.pdu.primitive.Binary.format(value, pdu, version);
+        break;
+
       case Property.RequestProblemInformation :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNECT" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `RequestProblemInformation is not valid in ${messageType}`);
+
         // byte
+        qx.core.Assert.assertInteger(
+          value,
+          "RequestProblemInformation value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0x00, 0xff,
+          "RequestProblemInformation value must be in [ 0x00, 0xff ]");
         len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
         break;
         
       case Property.WillDelayInterval :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "Will Properties" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `WillDelayInterval is not valid in ${messageType}`);
+
         // four-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "WillDelayInterval value must be a number");
         len = mqtt.pdu.primitive.Uint32.format(value, pdu, version);
         break;
         
       case Property.RequestResponseInformation :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNECT" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `RequestResponseInformation is not valid in ${messageType}`);
+
         // byte
+        qx.core.Assert.assertInteger(
+          value,
+          "RequestResponseInformation value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0x00, 0xff,
+          "RequestResponseInformation value must be in [ 0x00, 0xff ]");
         len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
         break;
         
       case Property.ResponseInformation :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `ResponseInformation is not valid in ${messageType}`);
+
         // utf-8 string
+        qx.core.Assert.assertString(
+          value,
+          "ResponseInformation value must be a string");
         len = mqtt.pdu.primitive.String.format(value, pdu, version);
         break;
         
       case Property.ServerReference :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK", "DISCONNECT" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `ServerReference is not valid in ${messageType}`);
+
         // utf-8 string
+        qx.core.Assert.assertString(
+          value,
+          "ServerReference value must be a string");
         len = mqtt.pdu.primitive.String.format(value, pdu, version);
         break;
         
       case Property.ReasonString :
+        // validate message type per MQTT Table 2-4
+        allowed =
+          [
+            "CONNACK",
+            "PUBACK",
+            "PUBREC",
+            "PUBREL",
+            "PUBCOMP",
+            "SUBACK",
+            "UNSUBACK",
+            "DISCONNECT",
+            "AUTH"
+          ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `ReasonString is not valid in ${messageType}`);
+
         // utf-8 string
+        qx.core.Assert.assertString(
+          value,
+          "ReasonString value must be a string");
         len = mqtt.pdu.primitive.String.format(value, pdu, version);
         break;
         
       case Property.ReceiveMaximum :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "Connect", "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `ReceiveMaximum is not valid in ${messageType}`);
+
         // two-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "ReceiveMaximum value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0, 65535,
+          "ReceiveMaximum value must be in [ 0, 65535 ]");
         len = mqtt.pdu.primitive.Uint16.format(value, pdu, version);
         break;
         
       case Property.TopicAliasMaximum :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNECT", "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `TopicAliasMaximum is not valid in ${messageType}`);
+
         // two-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "TopicAliasMaximum value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0, 65535,
+          "TopicAliasMaximum value must be in [ 0, 65535 ]");
         len = mqtt.pdu.primitive.Uint16.format(value, pdu, version);
         break;
         
       case Property.TopicAlias :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "PUBLISH" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `TopicAlias is not valid in ${messageType}`);
+
         // two-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "TopicAlias value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0, 65535,
+          "TopicAlias value must be in [ 0, 65535 ]");
         len = mqtt.pdu.primitive.Uint16.format(value, pdu, version);
         break;
         
       case Property.MaximumQoS :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `MaximumQoS is not valid in ${messageType}`);
+
         // byte
+        qx.core.Assert.assertInteger(
+          value,
+          "MaximumQoS value must be a number");
+        qx.core.Assert.assertInRange(
+          value, 0x00, 0x2,
+          "MaximumQoS value must be in [ 0, 2 ]");
         len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
         break;
         
       case Property.RetainAvailable :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `RetainAvailable is not valid in ${messageType}`);
+
         // byte
-        len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
+        qx.core.Assert.assertBoolean(
+          value,
+          "RetainAvailable value must be a boolean");
+        len = mqtt.pdu.primitive.Byte.format(value ? 1 : 0, pdu, version);
         break;
 
       case Property.UserProperty:
+        // validate message type per MQTT Table 2-4
+        allowed =
+          [
+            "CONNECT",
+            "CONNACK",
+            "PUBLISH",
+            "Will Properties",
+            "PUBACK",
+            "PUBREC",
+            "PUBREL",
+            "PUBCOMP",
+            "SUBSCRIBE",
+            "SUBACK",
+            "UNSUBSCRIBE",
+            "UNSUBACK",
+            "DISCONNECT",
+            "AUTH"
+          ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `UserProperty is not valid in ${messageType}`);
+
         // utf-8 string pair
+        qx.core.Assert.assertArray(
+          value,
+          "UserProperty value must ben an array");
+        qx.core.Assert.assert(
+          value.length == 2,
+          "UserProperty value must ben an array of 2 elements (type, value");
+        qx.core.Assert.assertString(
+          value[0],
+          "UserProperty value[0] (type)  must be a string");
+        qx.core.Assert.assertString(
+          value[1],
+          "UserProperty value[1] (value) must be a string");
         len = mqtt.pdu.primitive.String.format(value[1], pdu, version);
         len += mqtt.pdu.primitive.String.format(value[0], pdu, version);
         break;
 
       case Property.MaximumPacketSize :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNECT", "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `MaximumPacketSize is not valid in ${messageType}`);
+
         // four-byte integer
+        qx.core.Assert.assertInteger(
+          value,
+          "MaximumPacketSize value must be a number");
         len = mqtt.pdu.primitive.Uint32.format(value, pdu, version);
         break;
 
       case Property.WildcardSubscriptionAvailable :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `WildcardSubscriptionAvailable is not valid in ${messageType}`);
+
         // byte
-        len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
+        qx.core.Assert.assertBoolean(
+          value,
+          "WildcardSubscriptionAvailable value must be a boolean");
+        len = mqtt.pdu.primitive.Byte.format(value ? 1 : 0, pdu, version);
         break;
 
-      case Property.SubscriptionIdentifierAvailable :
+      case Property.SubscriptionIdentifiersAvailable :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `SubscriptionIdentifiersAvailable is not valid in ${messageType}`);
+
         // byte
-        len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
+        qx.core.Assert.assertBoolean(
+          value,
+          "SubscriptionIdentifiersAvailable value must be a boolean");
+        len = mqtt.pdu.primitive.Byte.format(value ? 1 : 0, pdu, version);
         break;
 
       case Property.SharedSubscriptionAvailable :
+        // validate message type per MQTT Table 2-4
+        allowed = [ "CONNACK" ];
+        qx.core.Assert.assert(
+          allowed.includes(messageType),
+          `SharedSubscriptionAvailable is not valid in ${messageType}`);
+
         // byte
-        len = mqtt.pdu.primitive.Byte.format(value, pdu, version);
+        qx.core.Assert.assertBoolean(
+          value,
+          "SharedSubscriptionAvailable value must be a boolean");
+        len = mqtt.pdu.primitive.Byte.format(value ? 1 : 0, pdu, version);
         break;
 
       default :
-        throw new Error("Unknown property id");
+        throw new Error(`Unknown property id: ${id}`);
       }
 
       // Now we can add the id itself
@@ -249,6 +568,11 @@ qx.Class.define("mqtt.pdu.shared.Property",
         value = mqtt.pdu.primitive.String.parse(pdu, version);
         break;
         
+      case Property.AuthenticationData :
+        // binary data
+        value = mqtt.pdu.primitive.Binary.parse(pdu, version);
+        break;
+
       case Property.RequestProblemInformation :
         // byte
         value = mqtt.pdu.primitive.Byte.parse(pdu, version);
@@ -301,7 +625,7 @@ qx.Class.define("mqtt.pdu.shared.Property",
         
       case Property.RetainAvailable :
         // byte
-        value = mqtt.pdu.primitive.Byte.parse(pdu, version);
+        value = !! mqtt.pdu.primitive.Byte.parse(pdu, version);
         break;
 
       case Property.UserProperty:
@@ -318,17 +642,17 @@ qx.Class.define("mqtt.pdu.shared.Property",
 
       case Property.WildcardSubscriptionAvailable :
         // byte
-        value = mqtt.pdu.primitive.Byte.parse(pdu, version);
+        value = !! mqtt.pdu.primitive.Byte.parse(pdu, version);
         break;
 
-      case Property.SubscriptionIdentifierAvailable :
+      case Property.SubscriptionIdentifiersAvailable :
         // byte
-        value = mqtt.pdu.primitive.Byte.parse(pdu, version);
+        value = !! mqtt.pdu.primitive.Byte.parse(pdu, version);
         break;
 
       case Property.SharedSubscriptionAvailable :
         // byte
-        value = mqtt.pdu.primitive.Byte.parse(pdu, version);
+        value = !! mqtt.pdu.primitive.Byte.parse(pdu, version);
         break;
 
       default :
@@ -371,6 +695,9 @@ qx.Class.define("mqtt.pdu.shared.Property",
 
     /** utf-8 string; CONNECT, CONNACK, AUTH */
     AuthenticationMethod            : 0x15,
+
+    /** binary data; CONNECT, CONNACK, AUTH */
+    AuthenticationData              : 0x16,
 
     /** byte; CONNECT */
     RequestProblemInformation       : 0x17,
@@ -425,7 +752,7 @@ qx.Class.define("mqtt.pdu.shared.Property",
     WildcardSubscriptionAvailable   : 0x28,
 
     /** byte; CONNACK */
-    SubscriptionIdentifierAvailable : 0x29,
+    SubscriptionIdentifiersAvailable : 0x29,
 
     /** byte; CONNACK */
       SharedSubscriptionAvailable     : 0x2a
