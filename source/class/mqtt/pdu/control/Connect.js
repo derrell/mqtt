@@ -284,7 +284,7 @@ qx.Class.define("mqtt.pdu.control.Connect",
         () =>
           {
             len +=
-              mqtt.pdu.primitive.UIntVar.format(
+              mqtt.pdu.primitive.UintVar.format(
                 connectPropertyLen, pdu, version);            
           },
 
@@ -333,7 +333,7 @@ qx.Class.define("mqtt.pdu.control.Connect",
             {
              len +=
                 willPropertyLen +
-                  mqtt.pdu.primitive.UIntVar.format(
+                  mqtt.pdu.primitive.UintVar.format(
                     willPropertyLen, pdu, version);
             }
           },
@@ -360,6 +360,18 @@ qx.Class.define("mqtt.pdu.control.Connect",
                         "this property yourself.");
                     }
 
+                    // Add our own provided Payload Format INdicator
+                    
+                    willPropertyLen +=
+                      mqtt.pdu.shared.Property.format(
+                        {
+                          messageType : "Will properties",
+                          id          : Property.PayloadFormatIndicator,
+                          value       : payloadFormatIndicator
+                        },
+                        pdu,
+                        version);
+
                     willPropertyLen +=
                       mqtt.pdu.shared.Property.format(
                         {
@@ -374,7 +386,7 @@ qx.Class.define("mqtt.pdu.control.Connect",
             }
           },
 
-        // Prepend the will topic
+        // 3.1.3.3 Will Topic
         () =>
           {
             if (connectInfo.willTopic)
@@ -385,7 +397,7 @@ qx.Class.define("mqtt.pdu.control.Connect",
             }
           },
 
-        // Prepend tghe will payload
+        // Prepend the will payload
         () =>
           {
             if (connectInfo.willPayload)
@@ -417,14 +429,10 @@ qx.Class.define("mqtt.pdu.control.Connect",
                     mqtt.pdu.primitive.Binary.format(
                       connectInfo.willPayload, pdu, version);
                 }
-
-              // We've already ascertained that all required will fields are
-              // present, so if this one is present, we can set the flag.
-              connectFlags |= Connect.Flags.Will;
             }
           },
 
-        // Prepend the username if it exists
+        // 3.1.3.5 User Name
         () =>
           {
             if (connectInfo.username)
@@ -435,7 +443,7 @@ qx.Class.define("mqtt.pdu.control.Connect",
             }
           },
 
-        // Prepend the password if it exists
+        // 3.1.3.6 Password
         () =>
           {
             if (connectInfo.password)
